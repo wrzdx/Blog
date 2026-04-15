@@ -19,7 +19,7 @@ export const validateCreatePost = [
 ]
 
 export const validatePostId = [
-  param("id").isInt().withMessage("Invalid post id").toInt(),
+  param("postId").isInt().withMessage("Invalid post id").toInt(),
 ]
 
 export const validateUpdatePost = [

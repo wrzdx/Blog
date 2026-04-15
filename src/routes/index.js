@@ -1,7 +1,7 @@
 import { Router } from "express"
-import { getPosts } from "../controllers/posts.controller.js"
+import { getPosts } from "../controllers/post.controller.js"
 import authRouter from "./auth.router.js"
-import postsRouter from "./posts.router.js"
+import postsRouter from "./post.router.js"
 
 const router = Router()
 

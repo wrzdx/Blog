@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken"
 import bcrypt from "bcryptjs"
-import { matchedData, validationResult } from "express-validator"
 import { validateRegister } from "../validators/user.validator.js"
 import { createUser, findUserByUsername } from "../services/user.service.js"
 import { AppError } from "../utils/error.js"

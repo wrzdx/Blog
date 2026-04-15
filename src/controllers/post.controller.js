@@ -1,10 +1,8 @@
-import { matchedData, validationResult } from "express-validator"
 import { authorize, authorizeOptional } from "../middleware/auth.js"
 import * as postService from "../services/post.service.js"
 import { AppError } from "../utils/error.js"
 import {
   validateCreatePost,
-  validatePostId,
   validateUpdatePost,
 } from "../validators/post.validator.js"
 import { validate } from "../middleware/validate.js"
@@ -17,7 +15,9 @@ export const createPost = [
     const { title, content, published } = req.validated
     return res
       .status(201)
-      .json(await postService.createPost(req.user, title, content, published))
+      .json(
+        await postService.createPost(req.user.id, title, content, published),
+      )
   },
 ]
 
@@ -36,18 +36,15 @@ export const getMyPosts = [
 
 export const getPost = [
   authorizeOptional,
-  validatePostId,
   validate,
   async (req, res) => {
-    const { id } = req.validated
-    const post = await postService.getPost(id)
+    const { postId } = req.validated
+    const post = await postService.getPost(postId)
     if (!post) {
       throw new AppError("Post not found", 404)
     }
-    if (!post.published) {
-      if (!req.user || post.authorId !== req.user.id) {
-        throw new AppError("Forbidden", 403)
-      }
+    if (!post.published && (!req.user || post.authorId !== req.user.id)) {
+      throw new AppError("Forbidden", 403)
     }
     return res.json(post)
   },
@@ -55,30 +52,30 @@ export const getPost = [
 
 export const updatePost = [
   authorize,
-  validatePostId,
   validateUpdatePost,
   validate,
   async (req, res) => {
-    const { id, title, content, published } = req.validated
-    const post = await postService.getPost(id)
+    const { postId, title, content, published } = req.validated
+    const post = await postService.getPost(postId)
     if (!post || post.authorId !== req.user.id) {
       throw new AppError("Forbidden", 403)
     }
-    return res.json(await postService.updatePost(id, title, content, published))
+    return res.json(
+      await postService.updatePost(postId, title, content, published),
+    )
   },
 ]
 
 export const deletePost = [
   authorize,
-  validatePostId,
   validate,
   async (req, res) => {
-    const { id } = req.validated
-    const post = await postService.getPost(id)
+    const { postId } = req.validated
+    const post = await postService.getPost(postId)
     if (!post || post.authorId !== req.user.id) {
       throw new AppError("Forbidden", 403)
     }
-    await postService.deletePost(id)
+    await postService.deletePost(postId)
     return res.status(204).send()
   },
 ]

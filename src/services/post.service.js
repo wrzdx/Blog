@@ -1,14 +1,17 @@
 import { prisma } from "../prisma/client.js"
 
-export async function createPost(user, title, content, published) {
+export async function createPost(userId, title, content, published) {
   return prisma.post.create({
     data: {
       author: {
-        connect: { id: user.id },
+        connect: { id: userId },
       },
       title,
       content,
       published,
+    },
+    include: {
+      author: true,
     },
   })
 }
