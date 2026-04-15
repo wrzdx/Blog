@@ -1,18 +1,15 @@
 import bcrypt from "bcryptjs"
-import { prisma } from "../lib/prisma.js"
+import { prisma } from "../prisma/client.js"
 import { AppError } from "../utils/error.js"
 
 export async function createUser(username, fullName, password) {
   const hashedPassword = await bcrypt.hash(password, 10)
   try {
-    return prisma.user.create({
+    return await prisma.user.create({
       data: {
         username,
         fullName,
         password: hashedPassword,
-      },
-      omit: {
-        password: true,
       },
     })
   } catch (err) {
@@ -23,20 +20,20 @@ export async function createUser(username, fullName, password) {
   }
 }
 
-export async function findUserById(id, omitPsw=true) {
+export async function findUserById(id, includePsw = false) {
   return prisma.user.findUnique({
     where: { id },
     omit: {
-      password: omitPsw,
+      password: !includePsw,
     },
   })
 }
 
-export async function findUserByUsername(username, omitPsw=true) {
+export async function findUserByUsername(username, includePsw = false) {
   return prisma.user.findUnique({
     where: { username },
     omit: {
-      password: omitPsw,
+      password: !includePsw,
     },
   })
 }

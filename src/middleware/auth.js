@@ -26,3 +26,28 @@ export const authorize = async (req, res, next) => {
     return next(new AppError("Unauthorized", 401))
   }
 }
+
+export const authorizeOptional = async (req, res, next) => {
+  const token = req.cookies.token
+
+  if (!token) {
+    return next()
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    const user = await findUserById(decoded.id)
+
+    if (user) {
+      req.user = user
+    }
+  } catch (err) {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    })
+  }
+
+  next()
+}

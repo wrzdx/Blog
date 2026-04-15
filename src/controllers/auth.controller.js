@@ -4,7 +4,8 @@ import { matchedData, validationResult } from "express-validator"
 import { validateRegister } from "../validators/user.validator.js"
 import { createUser, findUserByUsername } from "../services/user.service.js"
 import { AppError } from "../utils/error.js"
-import { authorize } from "../middlewares/auth.js"
+import { authorize } from "../middleware/auth.js"
+import { validate } from "../middleware/validate.js"
 
 export const me = [
   authorize,
@@ -14,7 +15,7 @@ export const me = [
 ]
 export const login = async (req, res) => {
   const { username, password } = req.body
-  const user = await findUserByUsername(username, false)
+  const user = await findUserByUsername(username, true)
   if (!user) {
     throw new AppError("Invalid credentials", 401)
   }
@@ -25,7 +26,7 @@ export const login = async (req, res) => {
   }
 
   const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-    expiresIn: "10000",
+    expiresIn: "1h",
   })
 
   res.cookie("token", token, {
@@ -35,7 +36,6 @@ export const login = async (req, res) => {
   })
 
   return res.status(200).json({
-    message: "User logged in",
     user: {
       id: user.id,
       username: user.username,
@@ -46,15 +46,9 @@ export const login = async (req, res) => {
 
 export const register = [
   validateRegister,
+  validate,
   async (req, res) => {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      return res
-        .status(400)
-        .json({ messages: errors.array().map((err) => err.msg) })
-    }
-
-    const { username, fullName, password } = matchedData(req)
+    const { username, fullName, password } = req.validated
     const user = await createUser(username, fullName, password)
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
@@ -66,16 +60,19 @@ export const register = [
       sameSite: "strict",
     })
 
-    return res.status(201).json({ message: "User created", user })
+    return res.status(201).json({ user })
   },
 ]
 
-export const logout = (req, res) => {
-  res.clearCookie("token", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-  })
+export const logout = [
+  authorize,
+  (req, res) => {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    })
 
-  return res.status(200).json({ message: "Logged out" })
-}
+    return res.status(200).send()
+  },
+]
