@@ -1,2 +1,89 @@
+.header > div {
+  display: flex;
+  align-items: center;
+  padding-block: 0.75rem;
+  gap: 0.5rem;
+}
+
 .header {
+  border-bottom: 1px solid var(--grey);
+  box-shadow: 0 -10px 20px var(--grey);
+}
+
+.logo {
+  font-size: 1.75rem;
+  line-height: 1.2;
+  font-weight: 600;
+  margin-right: auto;
+}
+
+.avatar {
+  position: relative;
+  flex: none;
+}
+
+.avatar button {
+  display: block;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.avatar button svg {
+  fill: none;
+  stroke: var(--light);
+  height: 2rem;
+  width: 2rem;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+}
+
+.dropdown {
+  position: absolute;
+  background-color: var(--darker-blue);
+  display: grid;
+  padding: 0.25rem;
+  border: 1px solid var(--grey);
+  border-radius: 0.5rem;
+  right: 0;
+  bottom: -6px;
+  gap: 0.15rem;
+  opacity: 0;
+  transform: translateY(90%);
+  pointer-events: none;
+  transition: all 0.2s;
+}
+
+.open {
+  opacity: 1;
+  transform: translateY(100%);
+  pointer-events: auto;
+}
+
+.dropdown a {
+  font-weight: 500;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  white-space: nowrap;
+  display: flex;
+  gap: 0.5ch;
+  align-items: center;
+  will-change: background-color;
+  transition: background-color 0.1s;
+}
+.dropdown a svg {
+  max-width: none;
+  height: 1.2em;
+  fill: none;
+}
+.dropdown a:hover {
+  background-color: var(--grey);
+}
+
+.username {
+  font-weight: 500;
+  font-size: 1.5rem;
 }
