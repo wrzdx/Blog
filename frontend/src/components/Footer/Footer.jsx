@@ -1,0 +1,13 @@
+import { footer } from "./Footer.module.css"
+import GithubSVG from "../../assets/github.svg?react"
+
+export default function Footer() {
+  return (
+    <footer className={footer}>
+      <a href="https://github.com/wrzdx" target="_blank">
+        wrzdx
+        {<GithubSVG />}
+      </a>
+    </footer>
+  )
+}

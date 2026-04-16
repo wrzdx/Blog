@@ -1,9 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router"
 import App from "./App"
-// import Home from "./components/home/Home"
-// import Equipment from "./components/equipment/Equipment"
-// import AboutUs from "./components/aboutUs/AboutUs"
-// import Item from "./components/item/Item"
+import Home from "./components/Home/Home"
 // import ErrorPage from "./components/error/Error"
 
 const routes = [
@@ -21,7 +18,7 @@ const routes = [
 
 export default function Router() {
   const router = createBrowserRouter(routes, {
-    basename: "/Blog",
+    // basename: "/Blog",
   })
 
   return <RouterProvider router={router} />

@@ -1,0 +1,27 @@
+.footer {
+  background-color: var(--dark);
+  display: flex;
+  padding: 0.25rem;
+}
+
+.footer a {
+  text-decoration: none;
+  color: var(--purple);
+  display: flex;
+  align-items: center;
+  margin: auto;
+  gap: 0.5ch;
+  font-size: 1.5rem;
+}
+
+.footer svg {
+  will-change: transform;
+  width: 1.1em;
+  height: 1.1em;
+  transition: transform 0.25s;
+  fill: var(--purple);
+}
+
+.footer svg:hover {
+  transform: scale(1.2);
+}

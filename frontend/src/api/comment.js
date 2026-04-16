@@ -1,4 +1,4 @@
-import { api } from "./client"
+import { api } from "./client.js"
 
 export const getPostComment = (id) => api(`/posts/${id}/comments`)
 export const createComment = (id, data) =>
@@ -7,7 +7,7 @@ export const createComment = (id, data) =>
     body: JSON.stringify(data),
   })
 
-  export const deleteComment = (postId, commentId) =>
+export const deleteComment = (postId, commentId) =>
   api(`/posts/${postId}/comments/${commentId}`, {
     method: "DELETE",
   })
