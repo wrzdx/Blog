@@ -12,6 +12,9 @@ export const createPost = [
   validateCreatePost,
   validate,
   async (req, res) => {
+    if (!req.user.isAuthor) {
+      throw new AppError("Only authors can create posts", 403)
+    }
     const { title, content, published } = req.validated
     return res
       .status(201)
@@ -30,6 +33,9 @@ export const getPosts = [
 export const getMyPosts = [
   authorize,
   async (req, res) => {
+    if (!req.user.isAuthor) {
+      throw new AppError("Only authors can have posts", 403)
+    }
     return res.json(await postService.getPosts({ authorId: req.user.id }))
   },
 ]

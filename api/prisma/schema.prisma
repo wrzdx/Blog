@@ -12,6 +12,7 @@ model User {
   username String    @unique
   fullName String
   password String
+  isAuthor Boolean   @default(false)
   posts    Post[]
   comments Comment[]
 }
