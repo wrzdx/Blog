@@ -55,7 +55,7 @@ export default function Header() {
           <span className="red">&lt;</span>wrzdx<span className="red">.</span>
           blog<span className="red">&gt;</span>
         </Link>
-        <span className={styles.username}>{username}</span>
+        <span className={styles.username + " red"}>{username}</span>
         <div className={styles.avatar}>
           <button onClick={() => setAvatarOpen((prev) => !prev)}>
             {<AvatarSVG />}

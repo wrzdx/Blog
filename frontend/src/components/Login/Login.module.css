@@ -1,0 +1,128 @@
+.login > h1 {
+  text-align: center;
+  margin-top: 3rem;
+  font-size: 3rem;
+}
+
+.login {
+  max-width: 34rem;
+}
+
+.login form > * {
+  position: relative;
+  margin-bottom: 1rem;
+  display: grid;
+  row-gap: 0.25rem;
+}
+
+.login label {
+  display: block;
+  font-weight: 500;
+}
+
+.login input {
+  background-color: var(--darker-blue);
+  border: 1px solid var(--grey);
+  padding: 0.35rem 0.7rem;
+  border-radius: 0.5rem;
+  color: var(--light);
+}
+
+.login input:focus {
+  outline: none;
+  box-shadow: 0 0 6px var(--grey);
+}
+
+.login form > *:has(button) input:focus {
+  box-shadow: none;
+}
+
+.login form > *:has(button) div {
+  display: flex;
+  border-radius: 0.5rem;
+  width: 100%;
+}
+
+.login form > *:has(button) div:has(input:focus) {
+  box-shadow: 0 0 6px var(--grey);
+}
+
+.login form > *:has(button) input {
+  border-radius: 0.5rem 0 0 0.5rem;
+  flex: 1;
+}
+.login form > * button {
+  border-radius: 0 0.5rem 0.5rem 0;
+  border: 1px solid var(--grey);
+  border-left: none;
+  background-color: var(--darker-blue);
+  padding: 0.25rem;
+  cursor: pointer;
+}
+
+.login form > * button svg {
+  height: 1.25em;
+}
+
+.login svg {
+  fill: none;
+  color: var(--light);
+}
+
+.login form > button {
+  margin-top: 1.75rem;
+  color: var(--darker-blue);
+  border: none;
+  background-color: var(--light);
+}
+.login > a {
+  margin-top: 1rem;
+  color: var(--light);
+  background-color: var(--darker-blue);
+  border: 1px solid var(--grey);
+}
+.login form > button,
+.login > a {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  will-change: filter;
+  transition: filter 0.1s;
+}
+
+.login form > button:hover {
+  filter: brightness(0.8);
+}
+
+.login > a:hover {
+  filter: brightness(1.2);
+}
+
+.login form > button svg {
+  height: 1.2rem;
+  color: var(--darker-blue);
+}
+
+.login a svg {
+  height: 1.2rem;
+  color: var(--light);
+}
+
+.delimiter {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.delimiter hr {
+  border: 1px solid var(--grey);
+  background-color: var(--grey);
+  height: 1px;
+}

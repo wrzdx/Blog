@@ -85,5 +85,10 @@
 
 .username {
   font-weight: 500;
-  font-size: 1.5rem;
+  font-size: 1.35rem;
+  max-width: 52ch;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: default;
 }
