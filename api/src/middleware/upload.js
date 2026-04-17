@@ -4,7 +4,11 @@ import multer from "multer"
 const storage = multer.diskStorage({
   destination: "uploads/",
   filename: (req, file, cb) => {
-    const unique = Date.now() + "-" + file.originalname
+    const safeName = file.originalname
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9.-]/g, "")
+    const unique = Date.now() + "-" + safeName
     cb(null, unique)
   },
 })

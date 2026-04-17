@@ -1,0 +1,17 @@
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.error h1 {
+  font-size: calc(2rem + 0.75vw);
+  font-weight: 600;
+}
+
+.error a {
+  color: var(--red);
+  font-size: calc(1.25rem + 0.75vw);
+  text-shadow: 0 0 12px rgba(0, 0, 0, 0.25);
+}

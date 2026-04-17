@@ -1,6 +1,6 @@
 import { prisma } from "../prisma/client.js"
 
-export async function createPost(userId, title, content, published) {
+export async function createPost(userId, title, content, published, imageUrl) {
   return prisma.post.create({
     data: {
       author: {
@@ -9,6 +9,7 @@ export async function createPost(userId, title, content, published) {
       title,
       content,
       published,
+      imageUrl,
     },
     include: {
       author: true,
@@ -36,13 +37,14 @@ export async function getPost(id) {
   })
 }
 
-export async function updatePost(id, title, content, published) {
+export async function updatePost(id, title, content, published, imageUrl) {
   return prisma.post.update({
     where: { id },
     data: {
       title,
       content,
       published,
+      imageUrl,
     },
   })
 }

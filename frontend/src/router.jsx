@@ -3,12 +3,14 @@ import { SignUp } from "./components/SignUp/SignUp"
 import { Login } from "./components/Login/Login"
 import { Home } from "./components/Home/Home"
 import { App } from "./App"
-// import ErrorPage from "./components/error/Error"
+import ErrorPage from "./components/Error/Error"
+import { NewPost } from "./components/NewPost/NewPost"
 
 const routes = [
   {
     path: "/",
     element: <App />,
+    errorElement: <ErrorPage />,
     children: [
       {
         element: <Home />,
@@ -21,6 +23,10 @@ const routes = [
       {
         element: <SignUp />,
         path: "/register",
+      },
+      {
+        element: <NewPost />,
+        path: "/newpost",
       },
     ],
   },

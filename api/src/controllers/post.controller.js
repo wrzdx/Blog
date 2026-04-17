@@ -11,29 +11,43 @@ import sanitizeHtml from "sanitize-html"
 
 export const createPost = [
   authorize,
+  upload.single("file"),
   validateCreatePost,
   validate,
   async (req, res) => {
-    if (!req.user.isAuthor) {
-      throw new AppError("Only authors can create posts", 403)
-    }
-    const { title, content, published } = req.validated
-    const cleanContent = sanitizeHtml(content, {
-      allowedTags: ["p", "strong", "em", "img", "h1", "h2"],
-      allowedAttributes: {
-        img: ["src", "alt"],
-      },
-    })
-    return res
-      .status(201)
-      .json(
-        await postService.createPost(
-          req.user.id,
-          title,
-          cleanContent,
-          published,
-        ),
+    try {
+      if (!req.user.isAuthor) {
+        throw new AppError("Only authors can create posts", 403)
+      }
+
+      const { title, content, published } = req.validated
+
+      const cleanContent = sanitizeHtml(content, {
+        allowedTags: ["p", "strong", "em", "img", "h1", "h2"],
+        allowedAttributes: {
+          img: ["src", "alt"],
+        },
+      })
+
+      const imageUrl = req.file
+        ? `http://localhost:${process.env.PORT}/uploads/${req.file.filename}`
+        : null
+
+      const post = await postService.createPost(
+        req.user.id,
+        title,
+        cleanContent,
+        published,
+        imageUrl,
       )
+
+      return res.status(201).json(post)
+    } catch (err) {
+      if (req.file?.path) {
+        fs.unlink(req.file.path, () => {})
+      }
+      next(err)
+    }
   },
 ]
 
@@ -74,13 +88,13 @@ export const updatePost = [
   validateUpdatePost,
   validate,
   async (req, res) => {
-    const { postId, title, content, published } = req.validated
+    const { postId, title, content, published, imageUrl } = req.validated
     const post = await postService.getPost(postId)
     if (!post || post.authorId !== req.user.id) {
       throw new AppError("Forbidden", 403)
     }
     return res.json(
-      await postService.updatePost(postId, title, content, published),
+      await postService.updatePost(postId, title, content, published, imageUrl),
     )
   },
 ]
@@ -98,14 +112,5 @@ export const deletePost = [
     const images = extractImages(deleted.content)
     deleteImages(images)
     return res.status(204).send()
-  },
-]
-
-export const uploadImage = [
-  upload.single("file"),
-  async (req, res) => {
-    res.json({
-      url: `http://localhost:${process.env.PORT}/uploads/${req.file.filename}`,
-    })
   },
 ]

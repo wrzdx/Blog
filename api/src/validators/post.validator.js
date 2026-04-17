@@ -16,6 +16,10 @@ export const validateCreatePost = [
     .isBoolean()
     .withMessage("Published must be a boolean")
     .toBoolean(),
+  body("imageUrl")
+    .optional()
+    .isURL({ require_tld: false })
+    .withMessage("Invalid image URL"),
 ]
 
 export const validatePostId = [
@@ -41,4 +45,5 @@ export const validateUpdatePost = [
     .optional()
     .withMessage("Published must be a boolean")
     .toBoolean(),
+  body("imageUrl").optional().isURL().withMessage("Invalid image URL"),
 ]
