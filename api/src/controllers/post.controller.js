@@ -6,6 +6,8 @@ import {
   validateUpdatePost,
 } from "../validators/post.validator.js"
 import { validate } from "../middleware/validate.js"
+import { upload } from "../middleware/upload.js"
+import sanitizeHtml from "sanitize-html"
 
 export const createPost = [
   authorize,
@@ -16,10 +18,21 @@ export const createPost = [
       throw new AppError("Only authors can create posts", 403)
     }
     const { title, content, published } = req.validated
+    const cleanContent = sanitizeHtml(content, {
+      allowedTags: ["p", "strong", "em", "img", "h1", "h2"],
+      allowedAttributes: {
+        img: ["src", "alt"],
+      },
+    })
     return res
       .status(201)
       .json(
-        await postService.createPost(req.user.id, title, content, published),
+        await postService.createPost(
+          req.user.id,
+          title,
+          cleanContent,
+          published,
+        ),
       )
   },
 ]
@@ -81,7 +94,18 @@ export const deletePost = [
     if (!post || post.authorId !== req.user.id) {
       throw new AppError("Forbidden", 403)
     }
-    await postService.deletePost(postId)
+    const deleted = await postService.deletePost(postId)
+    const images = extractImages(deleted.content)
+    deleteImages(images)
     return res.status(204).send()
+  },
+]
+
+export const uploadImage = [
+  upload.single("file"),
+  async (req, res) => {
+    res.json({
+      url: `http://localhost:${process.env.PORT}/uploads/${req.file.filename}`,
+    })
   },
 ]
