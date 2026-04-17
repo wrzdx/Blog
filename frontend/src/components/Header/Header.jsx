@@ -3,6 +3,8 @@ import styles from "./Header.module.css"
 import { useState } from "react"
 import { useAuth } from "../../hooks/useAuth"
 import { logout } from "../../api/auth"
+import UserSVG from "../../assets/user.svg?react"
+import PencilSVG from "../../assets/pencil-line.svg?react"
 import AvatarSVG from "../../assets/avatar.svg?react"
 import LoginSVG from "../../assets/log-in.svg?react"
 import UserPlusSVG from "../../assets/user-plus.svg?react"
@@ -20,12 +22,14 @@ const unauthLinks = [
     content: "Sign Up",
   },
 ]
-const authLinks = [
+const authorLinks = [
   {
+    icon: <UserSVG />,
     path: "/profile",
     content: "Profile",
   },
   {
+    icon: <PencilSVG />,
     path: "/newpost",
     content: "New Post",
   },
@@ -35,6 +39,7 @@ export function Header() {
   const { user, setUser } = useAuth()
   const [avatarOpen, setAvatarOpen] = useState(false)
   const navigate = useNavigate()
+  const authLinks = user?.isAuthor ? authorLinks : []
   const links = user ? authLinks : unauthLinks
   const username = user?.username || "Guest"
 
@@ -42,6 +47,7 @@ export function Header() {
     try {
       await logout()
       setUser(null)
+      setAvatarOpen(false)
       navigate("/", { replace: true })
     } catch (e) {
       console.error(e)
@@ -81,6 +87,7 @@ export function Header() {
             ))}
             {user && (
               <button className="red" onClick={handleSignOut}>
+                <LogoutSVG />
                 Logout
               </button>
             )}

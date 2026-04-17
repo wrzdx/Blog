@@ -22,7 +22,7 @@
   flex: none;
 }
 
-.avatar button {
+.avatar > button {
   display: block;
   background-color: transparent;
   border: none;
@@ -63,7 +63,7 @@
   pointer-events: auto;
 }
 
-.dropdown a {
+.dropdown > * {
   font-size: 0.7em;
   font-weight: 500;
   padding: 0.25rem;
@@ -75,13 +75,18 @@
   will-change: background-color;
   transition: background-color 0.1s;
 }
-.dropdown a svg {
+.dropdown > * svg {
   max-width: none;
   height: 1.2em;
   fill: none;
 }
-.dropdown a:hover {
+.dropdown > *:hover {
   background-color: var(--grey);
+}
+
+.dropdown button {
+  background-color: transparent;
+  border: none;
 }
 
 .username {
