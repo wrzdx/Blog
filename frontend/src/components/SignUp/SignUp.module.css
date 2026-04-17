@@ -1,26 +1,26 @@
-.login > h1 {
+.signup > h1 {
   text-align: center;
   margin-top: 4rem;
   font-size: calc(2rem + 0.75vw);
 }
 
-main.login {
+main.signup {
   max-width: 34rem;
 }
 
-.login form > * {
+.signup form > * {
   position: relative;
   margin-bottom: 1rem;
   display: grid;
   row-gap: 0.25rem;
 }
 
-.login label {
+.signup label {
   display: block;
   font-weight: 500;
 }
 
-.login input {
+.signup input {
   background-color: var(--darker-blue);
   border: 1px solid var(--grey);
   padding: 0.35rem 0.7rem;
@@ -28,30 +28,30 @@ main.login {
   color: var(--light);
 }
 
-.login input:focus {
+.signup input:focus {
   outline: none;
   box-shadow: 0 0 6px var(--grey);
 }
 
-.login form > *:has(button) input:focus {
+.signup form > *:has(button) input:focus {
   box-shadow: none;
 }
 
-.login form > *:has(button) div {
+.signup form > *:has(button) div {
   display: flex;
   border-radius: 0.5rem;
   width: 100%;
 }
 
-.login form > *:has(button) div:has(input:focus) {
+.signup form > *:has(button) div:has(input:focus) {
   box-shadow: 0 0 6px var(--grey);
 }
 
-.login form > *:has(button) input {
+.signup form > *:has(button) input {
   border-radius: 0.5rem 0 0 0.5rem;
   flex: 1;
 }
-.login form > * button {
+.signup form > * button {
   border-radius: 0 0.5rem 0.5rem 0;
   border: 1px solid var(--grey);
   border-left: none;
@@ -60,29 +60,29 @@ main.login {
   cursor: pointer;
 }
 
-.login form > * button svg {
+.signup form > * button svg {
   height: 1.25em;
 }
 
-.login svg {
+.signup svg {
   fill: none;
   color: var(--light);
 }
 
-.login form > button {
+.signup form > button {
   margin-top: 1.75rem;
   color: var(--darker-blue);
   border: none;
   background-color: var(--light);
 }
-.login > a {
+.signup > a {
   margin-top: 1rem;
   color: var(--light);
   background-color: var(--darker-blue);
   border: 1px solid var(--grey);
 }
-.login form > button,
-.login > a {
+.signup form > button,
+.signup > a {
   display: flex;
   width: 100%;
   justify-content: center;
@@ -96,20 +96,20 @@ main.login {
   transition: filter 0.1s;
 }
 
-.login form > button:hover {
+.signup form > button:hover {
   filter: brightness(0.8);
 }
 
-.login > a:hover {
+.signup > a:hover {
   filter: brightness(1.2);
 }
 
-.login form > button svg {
+.signup form > button svg {
   height: 1.2rem;
   color: var(--darker-blue);
 }
 
-.login a svg {
+.signup a svg {
   height: 1.2rem;
   color: var(--light);
 }

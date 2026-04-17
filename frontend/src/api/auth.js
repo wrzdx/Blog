@@ -18,3 +18,17 @@ export const logout = () =>
   api("/auth/logout", {
     method: "POST",
   })
+
+// eslint-disable-next-line no-unused-vars
+async function test() {
+  try {
+    await login({
+      username: "wrzdx",
+      password: "GeneralMed2023",
+    })
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+// test()

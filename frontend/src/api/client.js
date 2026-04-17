@@ -15,7 +15,7 @@ export async function api(path, options = {}) {
   if (!res.ok) {
     throw {
       status: res.status,
-      message: data.message || "API error",
+      messages: data.messages || ["API error"],
       data,
     }
   }

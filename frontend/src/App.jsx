@@ -1,8 +1,9 @@
-import { Outlet } from "react-router"
-import Footer from "./components/Footer/Footer"
-import Header from "./components/Header/Header"
 import "./css/App.css"
-function App() {
+import { Outlet } from "react-router"
+import { Header } from "./components/Header/Header"
+import { Footer } from "./components/Footer/Footer"
+
+export function App() {
   return (
     <>
       <Header />
@@ -11,5 +12,3 @@ function App() {
     </>
   )
 }
-
-export default App

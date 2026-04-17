@@ -1,11 +1,20 @@
 import "dotenv/config"
+import cors from "cors"
 import express from "express"
 import router from "./routes/index.js"
 import cookieParser from "cookie-parser"
 
 const PORT = process.env.PORT || 8000
+const allowedOrigins = ["http://localhost:5173", "https://yourapp.com"]
 
 const app = express()
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  }),
+)
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())

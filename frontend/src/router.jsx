@@ -1,7 +1,8 @@
 import { createBrowserRouter, RouterProvider } from "react-router"
-import App from "./App"
-import Home from "./components/Home/Home"
-import Login from "./components/Login/Login"
+import { SignUp } from "./components/SignUp/SignUp"
+import { Login } from "./components/Login/Login"
+import { Home } from "./components/Home/Home"
+import { App } from "./App"
 // import ErrorPage from "./components/error/Error"
 
 const routes = [
@@ -16,6 +17,10 @@ const routes = [
       {
         element: <Login />,
         path: "/login",
+      },
+      {
+        element: <SignUp />,
+        path: "/register",
       },
     ],
   },

@@ -1,7 +1,7 @@
 import { footer } from "./Footer.module.css"
 import GithubSVG from "../../assets/github.svg?react"
 
-export default function Footer() {
+export function Footer() {
   return (
     <footer className={footer}>
       <div className="container">

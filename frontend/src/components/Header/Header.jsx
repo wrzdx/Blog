@@ -31,7 +31,7 @@ const authLinks = [
   },
 ]
 
-export default function Header() {
+export function Header() {
   const { user, setUser } = useAuth()
   const [avatarOpen, setAvatarOpen] = useState(false)
   const navigate = useNavigate()
