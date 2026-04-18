@@ -1,19 +1,24 @@
 import { useEffect, useState } from "react"
 import styles from "./Home.module.css"
 import { getPosts } from "../../api/post"
-import {PostCard} from "../PostCard/PostCard"
+import { PostCard } from "../PostCard/PostCard"
+import { Loader } from "../Loader/Loader"
 
 export function Home() {
   const [loading, setLoading] = useState(true)
   const [posts, setPosts] = useState([])
-  let content = <span className={styles.spin}></span>
+  let content = <Loader />
 
   if (!loading) {
     content =
       posts.length === 0 ? (
-        <p>No posts yet</p>
+        <h1>No posts yet</h1>
       ) : (
-        <div className={styles.posts}>{posts.map((post) => <PostCard post={post} />)}</div>
+        <div className={styles.posts}>
+          {posts.map((post) => (
+            <PostCard key={post.id} post={post} />
+          ))}
+        </div>
       )
   }
   useEffect(() => {
@@ -26,5 +31,5 @@ export function Home() {
       .finally(() => setLoading(false))
   }, [])
 
-  return <main className="container">{content}</main>
+  return <main className={styles.home + " container"}>{content}</main>
 }

@@ -31,7 +31,7 @@ export function PostCard({ post }) {
       )}
       <div>
         <p className={styles.content}>{post.content}</p>
-        <Link to={"/posts/" + post.id} className={styles.readmore}>
+        <Link to={"/" + post.id} className={styles.readmore}>
           <BookSVG />
           Read More
         </Link>

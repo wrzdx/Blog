@@ -8,5 +8,5 @@ export const validateCreateComment = [
 ]
 
 export const validateCommentId = [
-  param("commentId").isInt().withMessage("Invalid post id").toInt(),
+  param("commentId").isInt().withMessage("Invalid comment id").toInt(),
 ]

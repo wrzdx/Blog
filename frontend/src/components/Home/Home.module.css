@@ -1,7 +1,7 @@
 .posts {
-  margin-block: 1.5rem;
+  margin-block: 2rem;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(20rem, 36rem));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 28rem));
+  gap: 2rem;
   justify-content: center;
 }

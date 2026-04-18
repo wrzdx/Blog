@@ -5,6 +5,7 @@ import { Home } from "./components/Home/Home"
 import { App } from "./App"
 import ErrorPage from "./components/Error/Error"
 import { NewPost } from "./components/NewPost/NewPost"
+import { Post } from "./components/Post/Post"
 
 const routes = [
   {
@@ -27,6 +28,10 @@ const routes = [
       {
         element: <NewPost />,
         path: "/newpost",
+      },
+      {
+        element: <Post />,
+        path: ":postId",
       },
     ],
   },

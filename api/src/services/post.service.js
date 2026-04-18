@@ -32,6 +32,11 @@ export async function getPost(id) {
     where: { id },
     include: {
       author: true,
+      comments: {
+        include: {
+          author: true,
+        },
+      },
     },
   })
 }
