@@ -9,7 +9,7 @@ import styles from "./SignUp.module.css"
 import { useAuth } from "../../hooks/useAuth"
 
 export function SignUp() {
-  const navigator = useNavigate()
+  const navigate = useNavigate()
   const { user, setUser } = useAuth()
   const [showPsw, setShowPsw] = useState(false)
   const handleSubmit = async (e) => {
@@ -31,14 +31,14 @@ export function SignUp() {
     try {
       const resData = await register(data)
       setUser(resData.user)
-      navigator("/")
+      navigate("/")
     } catch (err) {
       console.error(err)
       alert(err.message)
     }
   }
   if (user) {
-    navigator("/")
+    navigate("/")
   }
   return (
     <main className={styles.signup + " container"}>

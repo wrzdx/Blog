@@ -9,7 +9,7 @@ import styles from "./Login.module.css"
 import { useAuth } from "../../hooks/useAuth"
 
 export function Login() {
-  const navigator = useNavigate()
+  const navigate = useNavigate()
   const {user, setUser} = useAuth()
   const [showPsw, setShowPsw] = useState(false)
   const handleSubmit = async (e) => {
@@ -30,14 +30,14 @@ export function Login() {
     try {
       const resData = await login(data)
       setUser(resData.user)
-      navigator("/")
+      navigate("/")
     } catch (err) {
       console.error(err)
       alert(err.messages || "Something went wrong")
     }
   }
   if (user) {
-    navigator("/")
+    navigate("/")
   }
   return (
     <main className={styles.login + " container"}>

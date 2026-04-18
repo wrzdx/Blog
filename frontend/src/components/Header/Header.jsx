@@ -49,10 +49,12 @@ export function Header() {
       setUser(null)
       setAvatarOpen(false)
       navigate("/", { replace: true })
-    } catch (e) {
-      console.error(e)
+    } catch (err) {
+      console.error(err)
+      alert(err.messages || "Something went wrong")
     }
   }
+  
 
   return (
     <header className={styles.header}>

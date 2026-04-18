@@ -7,7 +7,7 @@ import {
 } from "../validators/post.validator.js"
 import { validate } from "../middleware/validate.js"
 import { upload } from "../middleware/upload.js"
-import sanitizeHtml from "sanitize-html"
+import { getPreview } from "../utils/getContentPreview.js"
 
 export const createPost = [
   authorize,
@@ -21,14 +21,6 @@ export const createPost = [
       }
 
       const { title, content, published } = req.validated
-
-      const cleanContent = sanitizeHtml(content, {
-        allowedTags: ["p", "strong", "em", "img", "h1", "h2"],
-        allowedAttributes: {
-          img: ["src", "alt"],
-        },
-      })
-
       const imageUrl = req.file
         ? `http://localhost:${process.env.PORT}/uploads/${req.file.filename}`
         : null
@@ -36,7 +28,7 @@ export const createPost = [
       const post = await postService.createPost(
         req.user.id,
         title,
-        cleanContent,
+        content,
         published,
         imageUrl,
       )
@@ -46,14 +38,20 @@ export const createPost = [
       if (req.file?.path) {
         fs.unlink(req.file.path, () => {})
       }
-      next(err)
+      throw new AppError(err.message || "Something went wrong", 500)
     }
   },
 ]
 
 export const getPosts = [
   async (req, res) => {
-    return res.json(await postService.getPosts({ published: true }))
+    const posts = (await postService.getPosts({ published: true })).map(
+      (post) => ({
+        ...post,
+        content: getPreview(post.content),
+      }),
+    )
+    return res.json(posts)
   },
 ]
 
@@ -109,8 +107,9 @@ export const deletePost = [
       throw new AppError("Forbidden", 403)
     }
     const deleted = await postService.deletePost(postId)
-    const images = extractImages(deleted.content)
-    deleteImages(images)
+    const filename = deleted.imageUrl.split("/").pop()
+
+    fs.unlink(`uploads/${filename}`, () => {})
     return res.status(204).send()
   },
 ]

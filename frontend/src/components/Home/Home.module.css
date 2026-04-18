@@ -1,0 +1,7 @@
+.posts {
+  margin-block: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 36rem));
+  gap: 1rem;
+  justify-content: center;
+}

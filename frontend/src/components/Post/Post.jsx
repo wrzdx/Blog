@@ -1,27 +1,19 @@
 import { useEffect, useState } from "react"
-import styles from "./Home.module.css"
+import styles from "./Post.module.css"
 import { getPosts } from "../../api/post"
 import {PostCard} from "../PostCard/PostCard"
 
-export function Home() {
+export function Post() {
   const [loading, setLoading] = useState(true)
-  const [posts, setPosts] = useState([])
+  const [post, setPost] = useState(null)
   let content = <span className={styles.spin}></span>
-
-  if (!loading) {
-    content =
-      posts.length === 0 ? (
-        <p>No posts yet</p>
-      ) : (
-        <div className={styles.posts}>{posts.map((post) => <PostCard post={post} />)}</div>
-      )
-  }
   useEffect(() => {
     getPosts()
-      .then(setPosts)
+      .then(setPost)
       .catch((err) => {
         console.error(err)
         alert(err.messages || "Something went wrong")
+        navigate("/")
       })
       .finally(() => setLoading(false))
   }, [])

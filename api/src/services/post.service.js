@@ -21,7 +21,6 @@ export async function getPosts(filterOptions = null) {
   return prisma.post.findMany({
     where: filterOptions || {},
     orderBy: { createdAt: "desc" },
-    omit: { content: true },
     include: {
       author: true,
     },
