@@ -35,11 +35,35 @@ export const createPost = async ({ title, content, published, file }) => {
   return data
 }
 
-export const updatePost = (id, data) =>
-  api(`/posts/${id}`, {
+export const updatePost = async (id, { title, content, published, file }) => {
+  const formData = new FormData()
+
+  if (file) {
+    formData.append("file", file)
+  }
+
+  formData.append("title", title)
+  formData.append("content", content)
+  formData.append("published", published)
+
+  const res = await fetch(`${API_URL}/posts/${id}`, {
     method: "PUT",
-    body: JSON.stringify(data),
+    body: formData,
+    credentials: "include",
   })
+
+  const data = await res.json()
+
+  if (!res.ok) {
+    throw {
+      status: res.status,
+      messages: data.messages || ["API error"],
+      data,
+    }
+  }
+
+  return data
+}
 
 export const deletePost = (id) =>
   api(`/posts/${id}`, {

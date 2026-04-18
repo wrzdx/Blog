@@ -11,20 +11,23 @@ import {
   toolbarPlugin,
 } from "@mdxeditor/editor"
 import "@mdxeditor/editor/style.css"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import styles from "./Editor.module.css"
 import PencilSVG from "../../assets/pencil-line.svg?react"
-import { createPost } from "../../api/post"
-import { useNavigate } from "react-router"
 
-export function Editor({edit=false}) {
-  const navigate = useNavigate()
-  const [content, setContent] = useState("Type here...")
-  const [title, setTitle] = useState("New Post")
+export function Editor({
+  content,
+  setContent,
+  title,
+  setTitle,
+  setImage,
+  handlePublish,
+  preview,
+  setPreview,
+  buttonContent,
+}) {
   const titleRef = useRef(null)
   const fileInputRef = useRef(null)
-  const [image, setImage] = useState(null)
-  const [preview, setPreview] = useState(null)
 
   const handleImageChange = (e) => {
     const file = e.target.files[0]
@@ -35,32 +38,12 @@ export function Editor({edit=false}) {
     const url = URL.createObjectURL(file)
     setPreview(url)
   }
-  const handlePublish = async () => {
-    try {
-      await createPost({
-        content,
-        title,
-        file: image,
-        published: true,
-      })
-      navigate("/profile")
-    } catch (err) {
-      console.error(err)
-      alert(err.messages || "Something went wrong")
-    }
-  }
 
   const handleRemoveImage = () => {
     setImage(null)
     setPreview(null)
     fileInputRef.current.value = ""
   }
-
-  useEffect(() => {
-    return () => {
-      if (preview) URL.revokeObjectURL(preview)
-    }
-  }, [preview])
 
   useEffect(() => {
     titleRef.current?.focus()
@@ -85,7 +68,6 @@ export function Editor({edit=false}) {
         maxLength={255}
         hidden
       />
-
       {preview ? (
         <div className={styles.previewWrapper}>
           <img src={preview} className={styles.preview} alt="preview" />
@@ -129,7 +111,7 @@ export function Editor({edit=false}) {
       />
       <button className={styles.publish} onClick={handlePublish}>
         <PencilSVG />
-        Create Post
+        {buttonContent}
       </button>
     </main>
   )

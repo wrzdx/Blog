@@ -1,16 +1,17 @@
 import { useEffect, useRef, useState } from "react"
 import styles from "./Post.module.css"
-import { getPost } from "../../api/post"
+import { deletePost, getPost } from "../../api/post"
 import { useNavigate, useParams } from "react-router"
 import { Loader } from "../Loader/Loader"
 import Markdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { createComment, deleteComment } from "../../api/comment"
 import TrashSVG from "../../assets/trash.svg?react"
+import PencilSVG from "../../assets/pencil-line.svg?react"
 import { useAuth } from "../../hooks/useAuth"
 
 export function Post() {
-  const {user} = useAuth()
+  const { user } = useAuth()
   const [loading, setLoading] = useState(true)
   const commentRef = useRef(null)
   const [post, setPost] = useState(null)
@@ -25,6 +26,7 @@ export function Post() {
       })
       .catch((err) => {
         console.error(err)
+        alert(err.messages || "Something went wrong")
         navigate("/")
       })
       .finally(() => {
@@ -35,6 +37,16 @@ export function Post() {
       isMounted = false
     }
   }, [postId, navigate])
+
+  const handleDeletePost = async () => {
+    try {
+      await deletePost(postId)
+      navigate("/")
+    } catch (err) {
+      console.error(err)
+      alert(err.messages || "Something went wrong")
+    }
+  }
 
   const handleComment = async () => {
     try {
@@ -78,10 +90,30 @@ export function Post() {
           )}
           <Markdown remarkPlugins={[remarkGfm]}>{post.content}</Markdown>
 
-          <p className={styles.meta}>
-            <span className={styles.username}>@{post.author.username}</span> ·{" "}
-            <span className={styles.date}>{formatDate(post.updatedAt)}</span>
-          </p>
+          <div className={styles.postNav}>
+            <p className={styles.meta}>
+              <span className={styles.username}>@{post.author.username}</span> ·{" "}
+              <span className={styles.date}>{formatDate(post.updatedAt)}</span>
+            </p>
+            <div
+              className={
+                styles.editBtn +
+                (post.authorId === user?.id ? "" : " " + styles.disabled)
+              }
+              onClick={() => navigate(`/posts/${postId}/edit`)}
+            >
+              <PencilSVG />
+            </div>
+            <div
+              className={
+                styles.deleteBtn +
+                (post.authorId === user?.id ? "" : " " + styles.disabled)
+              }
+              onClick={handleDeletePost}
+            >
+              <TrashSVG />
+            </div>
+          </div>
           <hr />
           <h3>{post.comments.length} Comments</h3>
           <div className={styles.comments}>
@@ -111,7 +143,10 @@ export function Post() {
                   </span>
                 </p>
                 <div
-                  className={styles.deleteComment + (comment.authorId === user?.id ? "" : " " + styles.disabled)}
+                  className={
+                    styles.deleteBtn +
+                    (comment.authorId === user?.id ? "" : " " + styles.disabled)
+                  }
                   onClick={handleDeleteComment(comment.id)}
                 >
                   <TrashSVG />

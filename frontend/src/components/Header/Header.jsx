@@ -24,11 +24,6 @@ const unauthLinks = [
 ]
 const authorLinks = [
   {
-    icon: <UserSVG />,
-    path: "/profile",
-    content: "Profile",
-  },
-  {
     icon: <PencilSVG />,
     path: "/newpost",
     content: "New Post",

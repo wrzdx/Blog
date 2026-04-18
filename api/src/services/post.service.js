@@ -41,15 +41,10 @@ export async function getPost(id) {
   })
 }
 
-export async function updatePost(id, title, content, published, imageUrl) {
+export async function updatePost(id, data) {
   return prisma.post.update({
     where: { id },
-    data: {
-      title,
-      content,
-      published,
-      imageUrl,
-    },
+    data,
   })
 }
 

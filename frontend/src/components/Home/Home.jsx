@@ -12,7 +12,7 @@ export function Home() {
   if (!loading) {
     content =
       posts.length === 0 ? (
-        <h1>No posts yet</h1>
+        <h1 className={styles.empty}>No posts yet</h1>
       ) : (
         <div className={styles.posts}>
           {posts.map((post) => (

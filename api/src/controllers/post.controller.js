@@ -8,6 +8,7 @@ import {
 import { validate } from "../middleware/validate.js"
 import { upload } from "../middleware/upload.js"
 import { getPreview } from "../utils/getContentPreview.js"
+import * as fs from "node:fs"
 
 export const createPost = [
   authorize,
@@ -83,17 +84,37 @@ export const getPost = [
 
 export const updatePost = [
   authorize,
+  upload.single("file"),
   validateUpdatePost,
   validate,
   async (req, res) => {
-    const { postId, title, content, published, imageUrl } = req.validated
-    const post = await postService.getPost(postId)
-    if (!post || post.authorId !== req.user.id) {
-      throw new AppError("Forbidden", 403)
+    try {
+      const { postId, title, content, published } = req.validated
+      const post = await postService.getPost(postId)
+      if (!post || post.authorId !== req.user.id) {
+        throw new AppError("Forbidden", 403)
+      }
+      if (post.imageUrl) {
+        const filename = post.imageUrl.split("/").pop()
+        fs.unlink(`uploads/${filename}`, () => {})
+      }
+      const imageUrl = req.file
+        ? `http://localhost:${process.env.PORT}/uploads/${req.file.filename}`
+        : null
+      return res.json(
+        await postService.updatePost(postId, {
+          title,
+          content,
+          published,
+          imageUrl,
+        }),
+      )
+    } catch (err) {
+      if (req.file?.path) {
+        fs.unlink(req.file.path, () => {})
+      }
+      throw new AppError(err.message || "Something went wrong", 500)
     }
-    return res.json(
-      await postService.updatePost(postId, title, content, published, imageUrl),
-    )
   },
 ]
 
@@ -107,9 +128,10 @@ export const deletePost = [
       throw new AppError("Forbidden", 403)
     }
     const deleted = await postService.deletePost(postId)
-    const filename = deleted.imageUrl.split("/").pop()
-
-    fs.unlink(`uploads/${filename}`, () => {})
+    if (deleted.imageUrl) {
+      const filename = deleted.imageUrl.split("/").pop()
+      fs.unlink(`uploads/${filename}`, () => {})
+    }
     return res.status(204).send()
   },
 ]

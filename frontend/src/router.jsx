@@ -6,6 +6,7 @@ import { App } from "./App"
 import ErrorPage from "./components/Error/Error"
 import { NewPost } from "./components/NewPost/NewPost"
 import { Post } from "./components/Post/Post"
+import { EditPost } from "./components/EditPost/EditPost"
 
 const routes = [
   {
@@ -31,7 +32,11 @@ const routes = [
       },
       {
         element: <Post />,
-        path: ":postId",
+        path: "posts/:postId",
+      },
+      {
+        path: "posts/:postId/edit",
+        element: <EditPost />,
       },
     ],
   },

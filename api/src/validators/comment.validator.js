@@ -4,7 +4,7 @@ export const validateCreateComment = [
   body("content")
     .trim()
     .isLength({ min: 1 })
-    .withMessage("Content is required"),
+    .withMessage("Comment content is required"),
 ]
 
 export const validateCommentId = [
