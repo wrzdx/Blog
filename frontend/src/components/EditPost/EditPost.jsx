@@ -11,9 +11,12 @@ export function EditPost() {
   const [title, setTitle] = useState("New Post")
   const [image, setImage] = useState(null)
   const [preview, setPreview] = useState(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handlePublish = async () => {
+    if (isSubmitting) return
     try {
+      setIsSubmitting(true)
       await updatePost(postId, {
         content,
         title,
@@ -24,6 +27,8 @@ export function EditPost() {
     } catch (err) {
       console.error(err)
       alert(err.messages || "Something went wrong")
+    } finally {
+      setIsSubmitting(false)
     }
   }
   const [loading, setLoading] = useState(true)
@@ -37,8 +42,8 @@ export function EditPost() {
           setTitle(data.title)
           const res = await fetch(data.imageUrl)
           const blob = await res.blob()
-          const file = new File([blob], "image.jpg", { type: blob.type })
-
+          const file = new File([blob], "image.jpeg", { type: blob.type })
+          console.log(blob.type)
           setImage(file)
           setPreview(data.imageUrl)
         }
@@ -62,7 +67,11 @@ export function EditPost() {
   }, [preview])
 
   if (loading) {
-    return <Loader />
+    return (
+      <div className="container">
+        <Loader />
+      </div>
+    )
   }
 
   return (
@@ -78,6 +87,7 @@ export function EditPost() {
         setPreview,
         handlePublish,
         buttonContent: "Update Post",
+        isSubmitting,
       }}
     />
   )

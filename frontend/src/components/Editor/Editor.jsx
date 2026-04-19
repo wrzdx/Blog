@@ -25,6 +25,7 @@ export function Editor({
   preview,
   setPreview,
   buttonContent,
+  isSubmitting,
 }) {
   const titleRef = useRef(null)
   const fileInputRef = useRef(null)
@@ -109,9 +110,13 @@ export function Editor({
           }),
         ]}
       />
-      <button className={styles.publish} onClick={handlePublish}>
+      <button
+        className={styles.publish}
+        onClick={handlePublish}
+        disabled={isSubmitting}
+      >
         <PencilSVG />
-        {buttonContent}
+        {isSubmitting ? "Publishing..." : buttonContent}
       </button>
     </main>
   )

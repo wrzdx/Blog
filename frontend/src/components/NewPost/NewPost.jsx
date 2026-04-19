@@ -9,8 +9,12 @@ export function NewPost() {
   const [title, setTitle] = useState("New Post")
   const [image, setImage] = useState(null)
   const [preview, setPreview] = useState(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
   const handlePublish = async () => {
+    if (isSubmitting) return
     try {
+      setIsSubmitting(true)
       const post = await createPost({
         content,
         title,
@@ -21,8 +25,11 @@ export function NewPost() {
     } catch (err) {
       console.error(err)
       alert(err.messages || "Something went wrong")
+    } finally {
+      setIsSubmitting(false)
     }
   }
+
   return (
     <Editor
       {...{
@@ -35,7 +42,8 @@ export function NewPost() {
         preview,
         setPreview,
         handlePublish,
-         buttonContent: "Create Post"
+        buttonContent: "Create Post",
+        isSubmitting
       }}
     />
   )

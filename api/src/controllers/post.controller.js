@@ -8,7 +8,11 @@ import {
 import { validate } from "../middleware/validate.js"
 import { upload } from "../middleware/upload.js"
 import { getPreview } from "../utils/getContentPreview.js"
-import * as fs from "node:fs"
+import {
+  deleteFile,
+  getFileUrl,
+  uploadFile,
+} from "../services/supabase.service.js"
 
 export const createPost = [
   authorize,
@@ -16,28 +20,31 @@ export const createPost = [
   validateCreatePost,
   validate,
   async (req, res) => {
+    let imagePath = null
     try {
       if (!req.user.isAuthor) {
         throw new AppError("Only authors can create posts", 403)
       }
 
       const { title, content, published } = req.validated
-      const imageUrl = req.file
-        ? `http://localhost:${process.env.PORT}/uploads/${req.file.filename}`
-        : null
+      if (req.file) {
+        imagePath = await uploadFile(req.file)
+      }
 
       const post = await postService.createPost(
         req.user.id,
         title,
         content,
         published,
-        imageUrl,
+        imagePath,
       )
 
-      return res.status(201).json(post)
+      const imageUrl = imagePath ? await getFileUrl(imagePath) : null
+
+      return res.status(201).json({ ...post, imageUrl })
     } catch (err) {
-      if (req.file?.path) {
-        fs.unlink(req.file.path, () => {})
+      if (imagePath) {
+        await deleteFile(imagePath).catch(() => {})
       }
       throw new AppError(err.message || "Something went wrong", 500)
     }
@@ -46,12 +53,24 @@ export const createPost = [
 
 export const getPosts = [
   async (req, res) => {
-    const posts = (await postService.getPosts({ published: true })).map(
-      (post) => ({
-        ...post,
-        content: getPreview(post.content),
+    const postsData = await postService.getPosts({ published: true })
+
+    const posts = await Promise.all(
+      postsData.map(async (post) => {
+        let imageUrl = null
+
+        if (post.imagePath) {
+          imageUrl = await getFileUrl(post.imagePath)
+        }
+
+        return {
+          ...post,
+          content: getPreview(post.content),
+          imageUrl,
+        }
       }),
     )
+
     return res.json(posts)
   },
 ]
@@ -62,7 +81,23 @@ export const getMyPosts = [
     if (!req.user.isAuthor) {
       throw new AppError("Only authors can have posts", 403)
     }
-    return res.json(await postService.getPosts({ authorId: req.user.id }))
+    const postsData = await postService.getPosts({ authorId: req.user.id })
+    const posts = await Promise.all(
+      postsData.map(async (post) => {
+        let imageUrl = null
+
+        if (post.imagePath) {
+          imageUrl = await getFileUrl(post.imagePath)
+        }
+
+        return {
+          ...post,
+          content: getPreview(post.content),
+          imageUrl,
+        }
+      }),
+    )
+    return res.json(posts)
   },
 ]
 
@@ -78,7 +113,8 @@ export const getPost = [
     if (!post.published && (!req.user || post.authorId !== req.user.id)) {
       throw new AppError("Forbidden", 403)
     }
-    return res.json(post)
+    const imageUrl = post.imagePath ? await getFileUrl(post.imagePath) : null
+    return res.json({ ...post, imageUrl })
   },
 ]
 
@@ -88,30 +124,31 @@ export const updatePost = [
   validateUpdatePost,
   validate,
   async (req, res) => {
+    let imagePath = null
     try {
       const { postId, title, content, published } = req.validated
       const post = await postService.getPost(postId)
       if (!post || post.authorId !== req.user.id) {
         throw new AppError("Forbidden", 403)
       }
-      if (post.imageUrl) {
-        const filename = post.imageUrl.split("/").pop()
-        fs.unlink(`uploads/${filename}`, () => {})
+      if (post.imagePath) {
+        await deleteFile(post.imagePath)
       }
-      const imageUrl = req.file
-        ? `http://localhost:${process.env.PORT}/uploads/${req.file.filename}`
-        : null
-      return res.json(
-        await postService.updatePost(postId, {
-          title,
-          content,
-          published,
-          imageUrl,
-        }),
-      )
+      if (req.file) {
+        imagePath = await uploadFile(req.file)
+      }
+      const updatedPost = await postService.updatePost(postId, {
+        title,
+        content,
+        published,
+        imagePath,
+      })
+
+      const imageUrl = imagePath ? await getFileUrl(imagePath) : null
+      return res.json({ ...updatedPost, imageUrl })
     } catch (err) {
-      if (req.file?.path) {
-        fs.unlink(req.file.path, () => {})
+      if (imagePath) {
+        await deleteFile(imagePath).catch(() => {})
       }
       throw new AppError(err.message || "Something went wrong", 500)
     }
@@ -128,9 +165,8 @@ export const deletePost = [
       throw new AppError("Forbidden", 403)
     }
     const deleted = await postService.deletePost(postId)
-    if (deleted.imageUrl) {
-      const filename = deleted.imageUrl.split("/").pop()
-      fs.unlink(`uploads/${filename}`, () => {})
+    if (deleted.imagePath) {
+      await deleteFile(deleteFile.imagePath)
     }
     return res.status(204).send()
   },

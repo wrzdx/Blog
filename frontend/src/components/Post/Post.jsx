@@ -86,7 +86,14 @@ export function Post() {
           <h1 className={styles.title}>{post.title}</h1>
 
           {post.imageUrl && (
-            <img src={post.imageUrl} className={styles.preview} alt="preview" />
+            <img
+              src={post.imageUrl}
+              className={styles.preview}
+              alt="preview"
+              onError={(e) => {
+                e.target.style.display = "none"
+              }}
+            />
           )}
           <Markdown remarkPlugins={[remarkGfm]}>{post.content}</Markdown>
 

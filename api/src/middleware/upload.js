@@ -1,18 +1,6 @@
 // src/middleware/upload.js
 import multer from "multer"
 
-const storage = multer.diskStorage({
-  destination: "uploads/",
-  filename: (req, file, cb) => {
-    const safeName = file.originalname
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-      .replace(/[^a-z0-9.-]/g, "")
-    const unique = Date.now() + "-" + safeName
-    cb(null, unique)
-  },
-})
-
 const fileFilter = (req, file, cb) => {
   const allowedTypes = ["image/jpeg", "image/png"]
 
@@ -23,4 +11,8 @@ const fileFilter = (req, file, cb) => {
   }
 }
 
-export const upload = multer({ storage, fileFilter })
+export const upload = multer({
+  storage: multer.memoryStorage(),
+  fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 },
+})

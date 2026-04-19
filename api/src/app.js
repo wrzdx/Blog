@@ -27,13 +27,6 @@ app.use((err, req, res, next) => {
     req.method,
     req.url,
   )
-  if (req.file?.path) {
-    fs.unlink(req.file.path, (unlinkErr) => {
-      if (unlinkErr) {
-        console.error("Failed to delete file:", unlinkErr.message)
-      }
-    })
-  }
 
   res.status(err.status || 500).json({
     messages: [err.message || "Internal Server Error"],

@@ -1,6 +1,6 @@
 import { prisma } from "../prisma/client.js"
 
-export async function createPost(userId, title, content, published, imageUrl) {
+export async function createPost(userId, title, content, published, imagePath) {
   return prisma.post.create({
     data: {
       author: {
@@ -9,7 +9,7 @@ export async function createPost(userId, title, content, published, imageUrl) {
       title,
       content,
       published,
-      imageUrl,
+      imagePath,
     },
     include: {
       author: true,
