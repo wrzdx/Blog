@@ -31,12 +31,19 @@
   color: var(--red);
 }
 
+.editor hr {
+  border-color: var(--grey);
+  border-width: 1.5px;
+  border-style: solid;
+  margin-block: 1.5rem;
+}
+
 .editor h1 {
   font-size: 1.75em;
 }
 
 .preview {
-  max-height: 28rem;
+max-height: 36rem;
   width: 100%;
   object-fit: cover;
   border-radius: 10px;

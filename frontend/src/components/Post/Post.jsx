@@ -9,6 +9,7 @@ import { createComment, deleteComment } from "../../api/comment"
 import TrashSVG from "../../assets/trash.svg?react"
 import PencilSVG from "../../assets/pencil-line.svg?react"
 import { useAuth } from "../../hooks/useAuth"
+import { useQuery } from "../../hooks/useQuery"
 
 export function Post() {
   const { user } = useAuth()
@@ -17,6 +18,10 @@ export function Post() {
   const [post, setPost] = useState(null)
   const navigate = useNavigate()
   const { postId } = useParams()
+  const { loading: deletingPost, run: runDeletePost } = useQuery()
+  const { loading: creatingComment, run: runCreateComment } = useQuery()
+  const [deletingComments, setDeletingComments] = useState({})
+
   useEffect(() => {
     let isMounted = true
 
@@ -38,43 +43,52 @@ export function Post() {
     }
   }, [postId, navigate])
 
-  const handleDeletePost = async () => {
-    try {
-      await deletePost(postId)
-      navigate("/")
-    } catch (err) {
-      console.error(err)
-      alert(err.messages || "Something went wrong")
-    }
-  }
+  const handleDeletePost = () =>
+    runDeletePost(async () => {
+      try {
+        await deletePost(postId)
+        navigate("/")
+      } catch (err) {
+        console.error(err)
+        alert(err.messages || "Something went wrong")
+      }
+    })
 
-  const handleComment = async () => {
-    try {
-      const newComment = await createComment(postId, {
-        content: commentRef.current.value,
-      })
-      setPost((prev) => ({
-        ...prev,
-        comments: [...prev.comments, newComment],
-      }))
+  const handleComment = () =>
+    runCreateComment(async () => {
+      try {
+        const newComment = await createComment(postId, {
+          content: commentRef.current.value,
+        })
+        setPost((prev) => ({
+          ...prev,
+          comments: [...prev.comments, newComment],
+        }))
 
-      commentRef.current.value = ""
-    } catch (err) {
-      console.error(err)
-      alert(err.messages || "Something went wrong")
-    }
-  }
+        commentRef.current.value = ""
+      } catch (err) {
+        console.error(err)
+        alert(err.messages || "Something went wrong")
+      }
+    })
 
   const handleDeleteComment = (commentId) => async () => {
+    if (deletingComments[commentId]) return
+
+    setDeletingComments((prev) => ({ ...prev, [commentId]: true }))
+
     try {
       await deleteComment(postId, commentId)
+
       setPost((prev) => ({
         ...prev,
-        comments: prev.comments.filter((comment) => comment.id !== commentId),
+        comments: prev.comments.filter((c) => c.id !== commentId),
       }))
     } catch (err) {
       console.error(err)
       alert(err.messages || "Something went wrong")
+    } finally {
+      setDeletingComments((prev) => ({ ...prev, [commentId]: false }))
     }
   }
 
@@ -117,6 +131,7 @@ export function Post() {
                 (post.authorId === user?.id ? "" : " " + styles.disabled)
               }
               onClick={handleDeletePost}
+              disabled={deletingPost}
             >
               <TrashSVG />
             </div>
@@ -131,7 +146,9 @@ export function Post() {
                 placeholder="Type here..."
                 ref={commentRef}
               ></textarea>
-              <button onClick={handleComment}>Comment</button>
+              <button onClick={handleComment} disabled={creatingComment}>
+                Comment
+              </button>
             </div>
             {post.comments.map((comment) => (
               <div key={comment.id} className={styles.comment}>
@@ -155,6 +172,7 @@ export function Post() {
                     (comment.authorId === user?.id ? "" : " " + styles.disabled)
                   }
                   onClick={handleDeleteComment(comment.id)}
+                  disabled={deletingComments[comment.id]}
                 >
                   <TrashSVG />
                 </div>
