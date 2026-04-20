@@ -44,7 +44,7 @@ const routes = [
 
 export default function Router() {
   const router = createBrowserRouter(routes, {
-    // basename: "/Blog",
+    basename: "/Blog",
   })
 
   return <RouterProvider router={router} />
