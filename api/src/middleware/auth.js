@@ -20,7 +20,7 @@ export const authorize = async (req, res, next) => {
     res.clearCookie("token", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
+      sameSite: "lax",
     })
 
     return next(new AppError("Unauthorized", 401))
@@ -45,7 +45,7 @@ export const authorizeOptional = async (req, res, next) => {
     res.clearCookie("token", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
+      sameSite: "lax",
     })
   }
 
