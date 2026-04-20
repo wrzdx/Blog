@@ -5,7 +5,7 @@ import router from "./routes/index.js"
 import cookieParser from "cookie-parser"
 
 const PORT = process.env.PORT || 8000
-const allowedOrigins = ["http://localhost:5173", "https://yourapp.com"]
+const allowedOrigins = process.env.ALLOWED_ORIGINS
 
 const app = express()
 
