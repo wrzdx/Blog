@@ -5,13 +5,22 @@ import router from "./routes/index.js"
 import cookieParser from "cookie-parser"
 
 const PORT = process.env.PORT || 8000
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-
+const allowedOrigins = new Set(
+  process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim()),
+)
 const app = express()
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin(origin, callback) {
+      if (!origin) return callback(null, true)
+
+      if (allowedOrigins.has(origin)) {
+        return callback(null, origin)
+      }
+
+      return callback(new Error("Not allowed by CORS"))
+    },
     credentials: true,
   }),
 )
