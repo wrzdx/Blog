@@ -34,7 +34,7 @@ export function SignUp() {
       navigate("/")
     } catch (err) {
       console.error(err)
-      alert(err.message)
+      alert(err.messages || "Something went wrong")
     }
   }
   if (user) {

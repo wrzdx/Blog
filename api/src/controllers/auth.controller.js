@@ -49,6 +49,7 @@ export const register = [
   validate,
   async (req, res) => {
     const { username, fullName, password } = req.validated
+
     const user = await createUser(username, fullName, password)
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
