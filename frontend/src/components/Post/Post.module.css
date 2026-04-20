@@ -143,6 +143,10 @@
   padding: 0.5rem 1rem 1rem;
 }
 
+.date {
+  font-weight: 400;
+}
+
 .postNav .meta {
   margin-right: auto;
 }

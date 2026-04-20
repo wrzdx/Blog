@@ -9,7 +9,7 @@ export function PostCard({ post }) {
       <div>
         <h2 className={styles.title}>{post.title}</h2>
         <p className={styles.meta}>
-          <span className={styles.username}>@{post.author.username}</span> ·{" "}
+          <span className={styles.username}>@{post.author?.username || "unknown"}</span> ·{" "}
           <span className={styles.date}>{formatDate(post.updatedAt)}</span>
         </p>
       </div>
