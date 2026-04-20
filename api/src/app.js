@@ -24,6 +24,21 @@ app.use(
     credentials: true,
   }),
 )
+const allowedOriginsArray = [...allowedOrigins]
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin
+
+  if (["GET", "HEAD", "OPTIONS"].includes(req.method)) {
+    return next()
+  }
+
+  if (!origin || !allowedOriginsArray.includes(origin)) {
+    return res.status(403).json({ message: "CSRF blocked" })
+  }
+
+  next()
+})
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
